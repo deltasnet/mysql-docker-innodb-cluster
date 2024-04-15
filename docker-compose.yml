@@ -1,0 +1,197 @@
+services:
+  mysql-server-1:
+    container_name: mysql-server-1
+    env_file:
+      - mysql-server.env
+    image: mysql/mysql-server:latest
+    ports:
+      - "3301:3306"
+    command:
+      [
+        "mysqld",
+        "--server_id=1",
+        "--binlog_checksum=NONE",
+        "--gtid_mode=ON",
+        "--enforce_gtid_consistency=ON",
+        "--log_bin",
+        "--master_info_repository=TABLE",
+        "--relay_log_info_repository=TABLE",
+        "--transaction_write_set_extraction=XXHASH64",
+        "--user=mysql",
+        "--host-cache-size=-1",
+        "--skip-name-resolve",
+        "--default_authentication_plugin=mysql_native_password",
+        "--binlog_transaction_dependency_tracking=WRITESET",
+      ]
+  mysql-server-2:
+    container_name: mysql-server-2
+    env_file:
+      - mysql-server.env
+    image: mysql/mysql-server:latest
+    command:
+      [
+        "mysqld",
+        "--server_id=2",
+        "--binlog_checksum=NONE",
+        "--gtid_mode=ON",
+        "--enforce_gtid_consistency=ON",
+        "--log_bin",
+        "--master_info_repository=TABLE",
+        "--relay_log_info_repository=TABLE",
+        "--transaction_write_set_extraction=XXHASH64",
+        "--user=mysql",
+        "--host-cache-size=-1",
+        "--skip-name-resolve",
+        "--default_authentication_plugin=mysql_native_password",
+        "--binlog_transaction_dependency_tracking=WRITESET",
+      ]
+    ports:
+      - "3302:3306"
+  mysql-server-3:
+    container_name: mysql-server-3
+    env_file:
+      - mysql-server.env
+    image: mysql/mysql-server:latest
+    command:
+      [
+        "mysqld",
+        "--server_id=3",
+        "--binlog_checksum=NONE",
+        "--gtid_mode=ON",
+        "--enforce_gtid_consistency=ON",
+        "--log_bin",
+        "--master_info_repository=TABLE",
+        "--relay_log_info_repository=TABLE",
+        "--transaction_write_set_extraction=XXHASH64",
+        "--user=mysql",
+        "--host-cache-size=-1",
+        "--skip-name-resolve",
+        "--default_authentication_plugin=mysql_native_password",
+        "--binlog_transaction_dependency_tracking=WRITESET",
+      ]
+    ports:
+      - "3303:3306"
+
+  mysql-server-4:
+    container_name: mysql-server-4
+    env_file:
+      - mysql-server.env
+    image: mysql/mysql-server:latest
+    command:
+      [
+        "mysqld",
+        "--server_id=3",
+        "--binlog_checksum=NONE",
+        "--gtid_mode=ON",
+        "--enforce_gtid_consistency=ON",
+        "--log_bin",
+        "--master_info_repository=TABLE",
+        "--relay_log_info_repository=TABLE",
+        "--transaction_write_set_extraction=XXHASH64",
+        "--user=mysql",
+        "--host-cache-size=-1",
+        "--skip-name-resolve",
+        "--default_authentication_plugin=mysql_native_password",
+        "--binlog_transaction_dependency_tracking=WRITESET",
+      ]
+    ports:
+      - "3304:3306"
+
+  mysql-server-5:
+    container_name: mysql-server-5
+    env_file:
+      - mysql-server.env
+    image: mysql/mysql-server:latest
+    command:
+      [
+        "mysqld",
+        "--server_id=3",
+        "--binlog_checksum=NONE",
+        "--gtid_mode=ON",
+        "--enforce_gtid_consistency=ON",
+        "--log_bin",
+        "--master_info_repository=TABLE",
+        "--relay_log_info_repository=TABLE",
+        "--transaction_write_set_extraction=XXHASH64",
+        "--user=mysql",
+        "--host-cache-size=-1",
+        "--skip-name-resolve",
+        "--default_authentication_plugin=mysql_native_password",
+        "--binlog_transaction_dependency_tracking=WRITESET",
+      ]
+    ports:
+      - "3305:3306"
+
+  mysql-server-6:
+    container_name: mysql-server-6
+    env_file:
+      - mysql-server.env
+    image: mysql/mysql-server:latest
+    command:
+      [
+        "mysqld",
+        "--server_id=3",
+        "--binlog_checksum=NONE",
+        "--gtid_mode=ON",
+        "--enforce_gtid_consistency=ON",
+        "--log_bin",
+        "--master_info_repository=TABLE",
+        "--relay_log_info_repository=TABLE",
+        "--transaction_write_set_extraction=XXHASH64",
+        "--user=mysql",
+        "--host-cache-size=-1",
+        "--skip-name-resolve",
+        "--default_authentication_plugin=mysql_native_password",
+        "--binlog_transaction_dependency_tracking=WRITESET",
+      ]
+    ports:
+      - "3307:3306"
+
+  mysql-shell:
+    container_name: mysql-shell
+    env_file:
+      - mysql-shell.env
+    image: mysql/mysql-shell:latest
+    volumes:
+      - ./scripts/:/scripts/
+    depends_on:
+      - mysql-server-1
+      - mysql-server-2
+      - mysql-server-3
+      - mysql-server-4
+      - mysql-server-5
+      - mysql-server-6
+
+  mysql-router-1:
+    container_name: mysql-router-1
+    env_file:
+      - mysql-router.env
+    image: mysql/mysql-router:latest
+    ports:
+      - "6446:6446"
+    depends_on:
+      - mysql-server-1
+      - mysql-server-2
+      - mysql-server-3
+      - mysql-server-4
+      - mysql-server-5
+      - mysql-server-6
+      - mysql-shell
+    restart: on-failure
+
+  mysql-router-2:
+    container_name: mysql-router-2
+    env_file:
+      - mysql-router.env
+    image: mysql/mysql-router:latest
+    ports:
+      - "6447:6446"
+    depends_on:
+      - mysql-server-1
+      - mysql-server-2
+      - mysql-server-3
+      - mysql-server-4
+      - mysql-server-5
+      - mysql-server-6
+      - mysql-shell
+    restart: on-failure
